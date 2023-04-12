@@ -26,8 +26,8 @@ bucket = os.environ.get('INFLUXDB_BUCKET')
 org = os.environ.get('INFLUXDB_ORG')
 token = os.environ.get('INFLUXDB_TOKEN')
 url = os.environ.get('INFLUXDB_URL')
-notify_always = os.environ.get('NOTIFY_ALWAYS')
-notify_always = notify_always.upper()
+notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
+notify_always = notify_always.lower() in ['true', '1', 'yes']
 
 if not all([bucket, org, token, url]):
     print("Missing InfluxDB configuration. Please check environment variables.")
@@ -69,7 +69,7 @@ elif os_name == 'Linux':
     max_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/([\d.]+)/', ping_result).group(1))
     avg_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/[\d.]+/([\d.]+)/', ping_result).group(1))
  
-if notify_always == 'TRUE' or packet_loss > 0:
+if notify_always or packet_loss > 0:
     logger.info('Sending to InfluxDB')
     if packet_loss > 0:
         logger.warning('Packet loss detected!')

@@ -24,7 +24,7 @@ ENV INFLUXDB_URL=http://localhost:8086
 ENV PING_HOST=8.8.8.8
 ENV PING_PACKETS=5
 ENV PING_INTERVAL=0.5
-ENV NOTIFY_ALWAYS=true
+ENV NOTIFY_ALWAYS=True
 
 # set up the cron job
 RUN echo "*/$MINUTES_INTERVAL * * * * /usr/local/bin/python /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
