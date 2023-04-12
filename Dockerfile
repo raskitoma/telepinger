@@ -31,9 +31,8 @@ RUN /usr/local/bin/python -m pip install --no-cache-dir -r requirements.txt
 # Copy the script into the container
 COPY telepinger.py .
 
-# set up the cron job
-RUN echo "*/$MINUTES_INTERVAL * * * * /usr/local/bin/python /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
-RUN crontab -l
+# Copy the entrypoint script into the container
+COPY entrypoint.sh .
 
-# Start cron in the foreground
-CMD ["cron", "-f"]
+# Set the entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
