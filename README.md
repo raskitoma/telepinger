@@ -42,5 +42,6 @@ Telepinger can be configured using the following environment variables:
 - `PING_HOST`: The host to ping.
 - `PING_PACKETS`: The number of ping packets to send (default: `5`).
 - `PING_INTERVAL`: The interval between ping packets in seconds (default: `0.5`).
+- `NOTIFY_ALWAYS`: `true` to send always results to inluxdb, `false` to send only when packet loss is detected (default: `true`).
 
 These environment variables can be set in the `environment` section of your `docker-compose.yml` file.
