@@ -8,13 +8,6 @@ import socket
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime
 
-parser = argparse.ArgumentParser(description='Ping a host and return the results')
-parser.add_argument('host', help='The host to ping')
-parser.add_argument('-c', '--count', help='The number of packets to send', type=int, default=5)
-parser.add_argument('-i', '--interval', help='The interval between packets', type=float, default=0.5)
-
-args = parser.parse_args()
-
 print("Starting Telepinger")
 print('Getting environment variables')
 
@@ -26,6 +19,15 @@ token = os.environ.get('INFLUXDB_TOKEN')
 url = os.environ.get('INFLUXDB_URL')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
+
+
+parser = argparse.ArgumentParser(description='Ping a host and return the results')
+parser.add_argument('host', help='The host to ping')
+parser.add_argument('-c', '--count', help='The number of packets to send', type=int, default=5)
+parser.add_argument('-i', '--interval', help='The interval between packets', type=float, default=0.5)
+
+args = parser.parse_args()
+
 
 print(f'Bucket: {bucket}')
 
