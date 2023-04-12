@@ -15,11 +15,6 @@ ENV MINUTES_INTERVAL=1
 ENV PING_HOST=8.8.8.8
 ENV PING_PACKETS=5
 ENV PING_INTERVAL=0.5
-ENV INFLUXDB_BUCKET=telepinger-no-bucket
-ENV INFLUXDB_ORG=telepinger
-ENV INFLUXDB_TOKEN=telepinger
-ENV INFLUXDB_URL=http://localhost:8086
-ENV NOTIFY_ALWAYS=True
 
 # Set the working directory
 WORKDIR /app
@@ -35,6 +30,7 @@ RUN /usr/local/bin/python -m pip install --no-cache-dir -r requirements.txt
 
 # Copy the script into the container
 COPY telepinger.py .
+COPY config.py .
 
 # Copy the entrypoint script into the container
 COPY entrypoint.sh .

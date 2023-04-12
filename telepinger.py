@@ -1,25 +1,12 @@
-import os
 import subprocess
 import platform
 import re
 import argparse
 import influxdb_client
 import socket
+from config import INFLUXDB_BUCKET, INFLUXDB_ORG, INFLUXDB_TOKEN, INFLUXDB_URL, NOTIFY_ALWAYS
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime
-
-print("Starting Telepinger")
-print('Getting environment variables')
-
-print(os.environ)
-
-bucket = os.environ.get('INFLUXDB_BUCKET')
-org = os.environ.get('INFLUXDB_ORG')
-token = os.environ.get('INFLUXDB_TOKEN')
-url = os.environ.get('INFLUXDB_URL')
-notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
-notify_always = notify_always.lower() in ['true', '1', 'yes']
-
 
 parser = argparse.ArgumentParser(description='Ping a host and return the results')
 parser.add_argument('host', help='The host to ping')
@@ -28,8 +15,9 @@ parser.add_argument('-i', '--interval', help='The interval between packets', typ
 
 args = parser.parse_args()
 
+print(f'==================== Starting Telepinger to {args.host}...')
 
-print(f'Bucket: {bucket}')
+starttime = datetime.now()
 
 hostname = socket.gethostname()
 
@@ -44,6 +32,7 @@ elif os_name == 'Windows':
 
 ping_result = subprocess.check_output(PING_CMD, shell=True, text=True)
 
+# set defaults
 packets_sent = 0
 packets_received = 0
 packet_loss = 0
@@ -66,19 +55,21 @@ elif os_name == 'Linux':
     max_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/([\d.]+)/', ping_result).group(1))
     avg_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/[\d.]+/([\d.]+)/', ping_result).group(1))
  
-if notify_always or packet_loss > 0:
+print(f'Pinged {args.host}: {packets_received} packets back out of {packets_sent} sent with {packet_loss}% packet loss. Min: {min_ms}ms, Max: {max_ms}ms, Avg: {avg_ms}ms') 
+
+if NOTIFY_ALWAYS or packet_loss > 0:
     if packet_loss > 0:
         print('Packet loss detected!')
 
-    if bucket=='telepinger-no-bucket':
+    if INFLUXDB_BUCKET=='telepinger-no-bucket':
         print('InfluxDB details have not been specified, not sending to InfluxDB')
     else:
         # open Influx
-        print(f'Sending to InfluxDB: {url}, {bucket}')
+        print(f'Sending to InfluxDB: {INFLUXDB_URL}, {INFLUXDB_BUCKET}')
         client = influxdb_client.InfluxDBClient(
-            url=url,
-            token=token,
-            org=org
+            url=INFLUXDB_URL,
+            token=INFLUXDB_TOKEN,
+            org=INFLUXDB_ORG
         )
 
         write_api = client.write_api(write_options=SYNCHRONOUS)
@@ -92,9 +83,13 @@ if notify_always or packet_loss > 0:
             .field("min", min_ms) \
             .field("max", max_ms) \
             .field("avg", avg_ms)
-        write_api.write(bucket=bucket, org=org, record=p)
+        write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=p)
 
-current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+endtime = datetime.now()
 
-message = f'{current_time} - Pinged {args.host} from {hostname} and got {packets_received} packets back out of {packets_sent} sent with {packet_loss}% packet loss. Min: {min_ms}ms, Max: {max_ms}ms, Avg: {avg_ms}ms'
-print(message)
+totaltime = endtime - starttime
+
+print(f'Total time: {totaltime}')
+
+print('==================== Telepinger finished')
+
