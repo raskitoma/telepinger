@@ -5,7 +5,6 @@ import re
 import argparse
 import influxdb_client
 import socket
-import logging
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime
 
@@ -16,11 +15,8 @@ parser.add_argument('-i', '--interval', help='The interval between packets', typ
 
 args = parser.parse_args()
 
-# setup logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.info("Starting Telepinger")
-logger.info('Getting environment variables')
+print("Starting Telepinger")
+print('Getting environment variables')
 
 bucket = os.environ.get('INFLUXDB_BUCKET', 'telepinger-no-bucket')
 org = os.environ.get('INFLUXDB_ORG', 'my_org')
@@ -29,13 +25,11 @@ url = os.environ.get('INFLUXDB_URL', 'http://localhost:8086')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
 
-print(f'Bucket: {bucket}, Org: {org}, Token: {token}, URL: {url}, Notify Always: {notify_always}')
-
 hostname = socket.gethostname()
 
 os_name = platform.system()
 
-logger.info(f'Running PING on {os_name} to {args.host}')
+print(f'Running PING on {os_name} to {args.host}')
 
 if os_name == 'Linux':
     PING_CMD =  f'ping -q -c {args.count} -i {args.interval} {args.host}'
@@ -68,11 +62,11 @@ elif os_name == 'Linux':
  
 if notify_always or packet_loss > 0:
     if packet_loss > 0:
-        logger.warning('Packet loss detected!')
+        print('Packet loss detected!')
 
     if bucket!='telepinger-no-bucket':
         # open Influx
-        logger.info('Sending to InfluxDB')
+        print('Sending to InfluxDB')
         client = influxdb_client.InfluxDBClient(
             url=url,
             token=token,
@@ -92,10 +86,9 @@ if notify_always or packet_loss > 0:
             .field("avg", avg_ms)
         write_api.write(bucket=bucket, org=org, record=p)
     else:
-        logger.warning('No bucket specified, not sending to InfluxDB')
+        print('InfluxDB details have not been specified, not sending to InfluxDB')
 
 current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
 message = f'{current_time} - Pinged {args.host} from {hostname} and got {packets_received} packets back out of {packets_sent} sent with {packet_loss}% packet loss. Min: {min_ms}ms, Max: {max_ms}ms, Avg: {avg_ms}ms'
 print(message)
-logger.info(message)

@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9
 # Set the environment variables
 ENV MINUTES_INTERVAL=1
 ENV PING_HOST=8.8.8.8
