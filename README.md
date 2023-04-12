@@ -7,7 +7,7 @@ Telepinger is a simple tool that pings a specified host and sends the results to
 To get started with Telepinger, first clone this repository:
 
 ```bash
-git clone https://github.com/your-username/telepinger.git
+git clone https://github.com/raskitoma/telepinger.git
 ```
 
 Then, navigate to the `telepinger` directory and build the Docker image:
