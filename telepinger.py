@@ -66,7 +66,7 @@ if notify_always or packet_loss > 0:
 
     if bucket!='telepinger-no-bucket':
         # open Influx
-        print('Sending to InfluxDB')
+        print(f'Sending to InfluxDB: {url}, {bucket}')
         client = influxdb_client.InfluxDBClient(
             url=url,
             token=token,
