@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.10
 
 # Set the working directory
 WORKDIR /app
@@ -10,7 +10,6 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install the required packages
-RUN python3 --version
 RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
 # Copy the script into the container
