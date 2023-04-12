@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  telepinger:
+    build: .
+    hostname: telepinger
+    container_name: telepinger
+    restart: always
+    environment:
+      MINUTES_INTERVAL: 1
+      INFLUXDB_BUCKET: my-bucket
+      INFLUXDB_ORG: my-org
+      INFLUXDB_TOKEN: my-token
+      INFLUXDB_URL: http://localhost:8086
+      PING_HOST: 8.8.8.8
+      PING_PACKETS: 5
+      PING_INTERVAL: 1
