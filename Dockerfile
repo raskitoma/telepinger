@@ -34,5 +34,7 @@ COPY telepinger.py .
 # Copy the entrypoint script into the container
 COPY entrypoint.sh .
 
+RUN chmod +x entrypoint.sh
+
 # Set the entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
