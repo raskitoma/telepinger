@@ -28,7 +28,5 @@ COPY telepinger.py .
 # set up the cron job
 RUN echo "*/$MINUTES_INTERVAL * * * * /usr/local/bin/python /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
 
-RUN env
-
 # Start cron in the foreground
 CMD ["cron", "-f"]

@@ -29,6 +29,8 @@ url = os.environ.get('INFLUXDB_URL')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
 
+print(f'Bucket: {bucket}, Org: {org}, Token: {token}, URL: {url}, Notify Always: {notify_always}')
+
 if not all([bucket, org, token, url]):
     print("Missing InfluxDB configuration. Please check environment variables.")
     logger.info('Missing InfluxDB configuration. Please check environment variables.')
