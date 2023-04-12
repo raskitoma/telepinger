@@ -64,7 +64,9 @@ if notify_always or packet_loss > 0:
     if packet_loss > 0:
         print('Packet loss detected!')
 
-    if bucket!='telepinger-no-bucket':
+    if bucket=='telepinger-no-bucket':
+        print('InfluxDB details have not been specified, not sending to InfluxDB')
+    else:
         # open Influx
         print(f'Sending to InfluxDB: {url}, {bucket}')
         client = influxdb_client.InfluxDBClient(
@@ -85,8 +87,6 @@ if notify_always or packet_loss > 0:
             .field("max", max_ms) \
             .field("avg", avg_ms)
         write_api.write(bucket=bucket, org=org, record=p)
-    else:
-        print('InfluxDB details have not been specified, not sending to InfluxDB')
 
 current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
