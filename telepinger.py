@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.9
+#!/usr/local/bin python
 import os
 import subprocess
 import platform
