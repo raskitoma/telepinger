@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import subprocess
 import platform
@@ -9,12 +10,6 @@ import logging
 from influxdb_client.client.write_api import SYNCHRONOUS
 from datetime import datetime
 
-# setup logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-logger.info("Starting Telepinger")
-
 parser = argparse.ArgumentParser(description='Ping a host and return the results')
 parser.add_argument('host', help='The host to ping')
 parser.add_argument('-c', '--count', help='The number of packets to send', type=int, default=5)
@@ -22,6 +17,10 @@ parser.add_argument('-i', '--interval', help='The interval between packets', typ
 
 args = parser.parse_args()
 
+# setup logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.info("Starting Telepinger")
 logger.info('Getting environment variables')
 
 bucket = os.environ.get('INFLUXDB_BUCKET')
