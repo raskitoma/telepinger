@@ -29,7 +29,7 @@ hostname = socket.gethostname()
 
 os_name = platform.system()
 
-print(f'Running PING on {os_name} to {args.host}')
+print(f'Running {os_name} PING from {hostname} to {args.host} with {args.count} packets and {args.interval} interval')
 
 if os_name == 'Linux':
     PING_CMD =  f'ping -q -c {args.count} -i {args.interval} {args.host}'
