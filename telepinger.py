@@ -25,6 +25,8 @@ url = os.environ.get('INFLUXDB_URL', 'http://localhost:8086')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
 
+print(f'Bucket: {bucket}')
+
 hostname = socket.gethostname()
 
 os_name = platform.system()
