@@ -1,6 +1,9 @@
 FROM python:3.9-slim-buster
 # Set the environment variables
 ENV MINUTES_INTERVAL=1
+ENV PING_HOST=8.8.8.8
+ENV PING_PACKETS=5
+ENV PING_INTERVAL=0.5
 
 # Set the working directory
 WORKDIR /app
