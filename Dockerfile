@@ -1,4 +1,6 @@
 FROM python:3.9-slim-buster
+# Set the environment variables
+ENV MINUTES_INTERVAL=1
 
 # Set the working directory
 WORKDIR /app
