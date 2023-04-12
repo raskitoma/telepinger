@@ -2,6 +2,7 @@ version: '3.8'
 services:
   telepinger:
     build: .
+    image: telepinger
     hostname: telepinger
     container_name: telepinger
     restart: always
