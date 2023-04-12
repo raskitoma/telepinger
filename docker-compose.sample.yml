@@ -14,3 +14,8 @@ services:
       PING_HOST: 8.8.8.8
       PING_PACKETS: 5
       PING_INTERVAL: 1
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m" 
