@@ -18,6 +18,8 @@ args = parser.parse_args()
 print("Starting Telepinger")
 print('Getting environment variables')
 
+print(os.environ)
+
 bucket = os.environ.get('INFLUXDB_BUCKET')
 org = os.environ.get('INFLUXDB_ORG')
 token = os.environ.get('INFLUXDB_TOKEN')
