@@ -18,10 +18,10 @@ args = parser.parse_args()
 print("Starting Telepinger")
 print('Getting environment variables')
 
-bucket = os.environ.get('INFLUXDB_BUCKET', 'telepinger-no-bucket')
-org = os.environ.get('INFLUXDB_ORG', 'my_org')
-token = os.environ.get('INFLUXDB_TOKEN', 'my-token')
-url = os.environ.get('INFLUXDB_URL', 'http://localhost:8086')
+bucket = os.environ.get('INFLUXDB_BUCKET')
+org = os.environ.get('INFLUXDB_ORG')
+token = os.environ.get('INFLUXDB_TOKEN')
+url = os.environ.get('INFLUXDB_URL')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
 
