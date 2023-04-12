@@ -6,6 +6,7 @@ import argparse
 import influxdb_client
 import socket
 from influxdb_client.client.write_api import SYNCHRONOUS
+from datetime import datetime
 
 parser = argparse.ArgumentParser(description='Ping a host and return the results')
 parser.add_argument('host', help='The host to ping')
@@ -51,7 +52,7 @@ if os_name == 'Windows':
 elif os_name == 'Linux':
     packets_sent = int(re.search(r'(\d+) packets transmitted', ping_result).group(1))
     packets_received = int(re.search(r'(\d+) received', ping_result).group(1))
-    packet_loss = int(re.search(r'(\d+)% packet loss', ping_result).group(1))
+    packet_loss = float(re.search(r'(\d+)% packet loss', ping_result).group(1))
     min_ms = float(re.search(r'rtt min/avg/max/mdev = ([\d.]+)/', ping_result).group(1))
     max_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/([\d.]+)/', ping_result).group(1))
     avg_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/[\d.]+/([\d.]+)/', ping_result).group(1))
@@ -75,3 +76,8 @@ p = influxdb_client.Point("ping") \
     .field("max", max_ms) \
     .field("avg", avg_ms)
 write_api.write(bucket=bucket, org=org, record=p)
+
+current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+message = f'{current_time} - Pinged {args.host} from {hostname} and got {packets_received} packets back out of {packets_sent} sent with {packet_loss}% packet loss. Min: {min_ms}ms, Max: {max_ms}ms, Avg: {avg_ms}ms'
+print(message)
