@@ -1,14 +1,4 @@
 FROM python:3.9-slim-buster
-# Set the environment variables
-ENV MINUTES_INTERVAL=1
-ENV INFLUXDB_BUCKET=my-bucket
-ENV INFLUXDB_ORG=my-org
-ENV INFLUXDB_TOKEN=my-token
-ENV INFLUXDB_URL=http://localhost:8086
-ENV PING_HOST=8.8.8.8
-ENV PING_PACKETS=5
-ENV PING_INTERVAL=0.5
-ENV NOTIFY_ALWAYS=True
 
 # Set the working directory
 WORKDIR /app

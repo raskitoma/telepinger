@@ -22,19 +22,14 @@ logger.setLevel(logging.INFO)
 logger.info("Starting Telepinger")
 logger.info('Getting environment variables')
 
-bucket = os.environ.get('INFLUXDB_BUCKET')
-org = os.environ.get('INFLUXDB_ORG')
-token = os.environ.get('INFLUXDB_TOKEN')
-url = os.environ.get('INFLUXDB_URL')
+bucket = os.environ.get('INFLUXDB_BUCKET', 'telepinger-no-bucket')
+org = os.environ.get('INFLUXDB_ORG', 'my_org')
+token = os.environ.get('INFLUXDB_TOKEN', 'my-token')
+url = os.environ.get('INFLUXDB_URL', 'http://localhost:8086')
 notify_always = os.environ.get('NOTIFY_ALWAYS', 'True')
 notify_always = notify_always.lower() in ['true', '1', 'yes']
 
 print(f'Bucket: {bucket}, Org: {org}, Token: {token}, URL: {url}, Notify Always: {notify_always}')
-
-if not all([bucket, org, token, url]):
-    print("Missing InfluxDB configuration. Please check environment variables.")
-    logger.info('Missing InfluxDB configuration. Please check environment variables.')
-    exit(1)
 
 hostname = socket.gethostname()
 
@@ -72,28 +67,32 @@ elif os_name == 'Linux':
     avg_ms = float(re.search(r'rtt min/avg/max/mdev = [\d.]+/[\d.]+/([\d.]+)/', ping_result).group(1))
  
 if notify_always or packet_loss > 0:
-    logger.info('Sending to InfluxDB')
     if packet_loss > 0:
         logger.warning('Packet loss detected!')
-    # open Influx
-    client = influxdb_client.InfluxDBClient(
-        url=url,
-        token=token,
-        org=org
-    )
 
-    write_api = client.write_api(write_options=SYNCHRONOUS)
+    if bucket!='telepinger-no-bucket':
+        # open Influx
+        logger.info('Sending to InfluxDB')
+        client = influxdb_client.InfluxDBClient(
+            url=url,
+            token=token,
+            org=org
+        )
 
-    p = influxdb_client.Point("ping") \
-        .tag("host", hostname) \
-        .tag("dest", args.host) \
-        .field("trx", packets_sent) \
-        .field("rcx", packets_received) \
-        .field("loss", packet_loss) \
-        .field("min", min_ms) \
-        .field("max", max_ms) \
-        .field("avg", avg_ms)
-    write_api.write(bucket=bucket, org=org, record=p)
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+
+        p = influxdb_client.Point("ping") \
+            .tag("host", hostname) \
+            .tag("dest", args.host) \
+            .field("trx", packets_sent) \
+            .field("rcx", packets_received) \
+            .field("loss", packet_loss) \
+            .field("min", min_ms) \
+            .field("max", max_ms) \
+            .field("avg", avg_ms)
+        write_api.write(bucket=bucket, org=org, record=p)
+    else:
+        logger.warning('No bucket specified, not sending to InfluxDB')
 
 current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
