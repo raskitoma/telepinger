@@ -10,22 +10,29 @@ To get started with Telepinger, first clone this repository:
 git clone https://github.com/raskitoma/telepinger.git
 ```
 
-Then, navigate to the `telepinger` directory and build the Docker image:
+Then, navigate to the `telepinger` directory:
 
 ```bash
-cd telepinger docker-compose build
+cd telepinger 
 ```
 
 Next, create a copy of the `docker-compose.sample.yml` file and update it with your own configuration:
 
 ```bash
-cp docker-compose.sample.yml docker-compose.yml nano docker-compose.yml
+cp docker-compose.sample.yml docker-compose.yml
+nano docker-compose.yml
 ```
 
-Finally, start the Telepinger container using `docker-compose`:
+Build the Docker image:
 
 ```bash
-docker-compose up -d
+docker compose build
+```
+
+Finally, start the Telepinger container using `docker compose`:
+
+```bash
+docker compose up -d
 ```
 
 Telepinger will now start pinging the specified host and sending the results to your InfluxDB database at the specified interval.
