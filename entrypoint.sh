@@ -6,7 +6,7 @@ echo "Current environment variables:"
 
 env | grep MINUTES_
 env | grep PING_
-env | grep INFLUX_
+env | grep INFLUXDB_
 env | grep NOTIFY_
 
 # Set up the cron job
