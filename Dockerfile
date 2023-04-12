@@ -15,9 +15,6 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt
 # Copy the script into the container
 COPY telepinger.py .
 
-# Make the script executable
-RUN chmod +x telepinger.py
-
 # Set the environment variables
 ENV MINUTES_INTERVAL=1
 ENV INFLUXDB_BUCKET=my-bucket
@@ -30,7 +27,7 @@ ENV PING_INTERVAL=0.5
 ENV NOTIFY_ALWAYS=true
 
 # set up the cron job
-RUN echo "*/$MINUTES_INTERVAL * * * * /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
+RUN echo "*/$MINUTES_INTERVAL * * * * python /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
 
 # Start cron in the foreground
 CMD ["cron", "-f"]
