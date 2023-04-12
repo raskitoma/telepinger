@@ -30,7 +30,7 @@ ENV PING_INTERVAL=0.5
 ENV NOTIFY_ALWAYS=true
 
 # set up the cron job
-RUN echo "*/$MINUTES_INTERVAL * * * * /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
+RUN echo "*/$MINUTES_INTERVAL * * * * python3 /app/telepinger.py -c $PING_PACKETS -i $PING_INTERVAL $PING_HOST > /proc/1/fd/1 2>&1" | crontab -
 
 # Start cron in the foreground
 CMD ["cron", "-f"]
